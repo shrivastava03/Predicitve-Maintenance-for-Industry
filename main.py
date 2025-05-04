@@ -11,8 +11,8 @@ import plotly.express as px
 st.set_page_config(page_title="Predictive Maintenance", layout="wide")
 
 # Load trained ML model and scaler
-model = joblib.load('model/model.pkl')
-scaler = joblib.load('model/scaler.pkl')
+model = joblib.load('model.pkl')
+scaler = joblib.load('scaler.pkl')
 
 # Display logo and app title
 st.image("assets/logo.png", width=120)
