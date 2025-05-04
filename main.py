@@ -32,7 +32,6 @@ st.markdown("""
 
 # --- Home Section ---
 if section == "🏠 Home":
-    st.title("🔧 Predictive Maintenance Demo")
     st.markdown("Predict failures before they happen. Let the machines talk. ⚙️💥")
 
 # --- Single Prediction Section ---
