@@ -15,7 +15,7 @@ model = joblib.load('model.pkl')
 scaler = joblib.load('scaler.pkl')
 
 # Display logo and app title
-st.image("assets/logo.png", width=120)
+st.image("logo.png", width=120)
 st.title("🛠 Predictive Maintenance for Industrial Equipment")
 
 # Sidebar navigation
