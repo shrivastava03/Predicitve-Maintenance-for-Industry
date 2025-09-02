@@ -18,9 +18,34 @@ A machine learning web application that predicts equipment failure using sensor 
 - **Input Features**: Sensor data (e.g., temperature, vibration, pressure)
 - **Output**: Binary classification (Failure / No Failure)
 
+## 📂 Dataset  
+The dataset includes sensor readings and machine status logs.  
+
+- **Source:** Publicly available industrial maintenance datasets  
+- **Features:** Temperature, vibration, pressure, load, etc.  
+- **Target:** Machine failure status (Fail / No Fail)  
+
+---
+
 ## 📦 Installation
 
 1. Clone the repository:
    ```bash
    git clone https://github.com/shrivastava03/predictive-maintenance-app.git
    cd predictive-maintenance-app
+
+2. Install Dependencies
+   pip install -r requirements.txt
+   
+3. Run the Streamlit App
+   streamlit run app.py
+   
+## Future Improvements
+
+  Integration with real-time IoT sensor data
+
+  More advanced ML models (Deep Learning, RNNs)
+
+  Automated retraining with live data
+
+Cloud deployment (AWS/GCP/Azure)
