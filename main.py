@@ -5,46 +5,53 @@ import pandas as pd
 import seaborn as sns
 import matplotlib.pyplot as plt
 import plotly.express as px
+import time
 
 # ==========================
 # PAGE CONFIGURATION
 # ==========================
 st.set_page_config(
-    page_title="Predictive Maintenance for Industrial Machines",
+    page_title="Predictive Maintenance",
     layout="wide",
     page_icon="⚙️"
 )
 
 # ==========================
+# ADD CSS VERSION TO FORCE REFRESH (CACHE-BUSTING)
+# ==========================
+version = str(time.time())  # creates unique ID each run to avoid cached CSS
+
+# ==========================
 # FORCE DARK MODE + KEEP GRADIENT UI
 # ==========================
-st.markdown("""
-    <style>
-        html, body, [data-testid="stAppViewContainer"] {
+st.markdown(f"""
+    <style id="{version}">
+        html, body, [data-testid="stAppViewContainer"] {{
             background: linear-gradient(135deg, #0f2027, #203a43, #2c5364) !important;
             color: #f2f2f2 !important;
-        }
-        [data-testid="stSidebar"] {
+        }}
+        [data-testid="stSidebar"] {{
             background: linear-gradient(180deg, #161b22, #0d1117) !important;
             color: #c9d1d9 !important;
             box-shadow: 2px 0 8px rgba(255, 255, 255, 0.05);
-        }
-        [data-testid="stHeader"] {
+        }}
+        [data-testid="stHeader"] {{
             background: #0d1117 !important;
             border-bottom: 1px solid #30363d !important;
-        }
+        }}
         [data-testid="stToolbar"],
-        button[kind="header"] {
+        button[kind="header"] {{
             display: none !important; /* hide theme toggle */
-        }
+        }}
     </style>
 """, unsafe_allow_html=True)
+
 # ==========================
-# FLOATING SIDEBAR TOGGLE BUTTON
+# FLOATING SIDEBAR BUTTON
 # ==========================
-st.markdown("""
-    <style>
-    .open-sidebar-btn {
+st.markdown(f"""
+    <style id="sidebar-{version}">
+    .open-sidebar-btn {{
         position: fixed;
         top: 20px;
         left: 20px;
@@ -58,83 +65,80 @@ st.markdown("""
         cursor: pointer;
         box-shadow: 0 0 10px rgba(0, 255, 255, 0.4);
         font-size: 22px;
-        display: none;
+        display: flex;
         align-items: center;
         justify-content: center;
         transition: all 0.25s ease;
-    }
-    .open-sidebar-btn:hover {
+    }}
+    .open-sidebar-btn:hover {{
         transform: scale(1.1);
         box-shadow: 0 0 18px rgba(0, 255, 255, 0.6);
-    }
-    [data-testid="collapsedControl"] {
+    }}
+    [data-testid="collapsedControl"] {{
         display: none !important;
-    }
+    }}
     </style>
 
-    <script>
-    const observer = new MutationObserver(() => {
+    <script id="script-{version}">
+    const observer = new MutationObserver((mutations) => {{
         const sidebar = parent.document.querySelector('[data-testid="stSidebar"]');
         const btn = parent.document.querySelector('.open-sidebar-btn');
-        if (sidebar && btn) {
-            const isHidden = sidebar.style.visibility === 'hidden' || sidebar.style.display === 'none';
-            btn.style.display = isHidden ? 'flex' : 'none';
-        }
-    });
 
-    observer.observe(parent.document.body, { childList: true, subtree: true });
+        if (sidebar && btn) {{
+            if (sidebar.style.visibility === 'hidden' || sidebar.style.display === 'none') {{
+                btn.style.display = 'flex';
+            }} else {{
+                btn.style.display = 'none';
+            }}
+        }}
+    }});
 
-    if (!parent.document.querySelector('.open-sidebar-btn')) {
+    observer.observe(parent.document.body, {{ childList: true, subtree: true }});
+
+    const existingBtn = parent.document.querySelector('.open-sidebar-btn');
+    if (!existingBtn) {{
         const btn = document.createElement('button');
         btn.innerHTML = '☰';
         btn.classList.add('open-sidebar-btn');
-        btn.onclick = () => {
+        btn.onclick = () => {{
             const sidebar = parent.document.querySelector('[data-testid="stSidebar"]');
             if (sidebar) sidebar.style.visibility = 'visible';
-        };
+        }};
         parent.document.body.appendChild(btn);
-    }
+    }}
     </script>
 """, unsafe_allow_html=True)
+
 # ==========================
 # GLOBAL CSS STYLING
 # ==========================
-st.markdown("""
-<style>
-/* Background gradient and text */
-.stApp {
+st.markdown(f"""
+<style id="global-{version}">
+.stApp {{
     background: transparent !important;
     color: #f2f2f2;
     font-family: 'Inter', sans-serif;
-}
-
-/* ===== THEME VARIABLES ===== */
-:root {
+}}
+:root {{
     --primary-color: #238636;
     --background-color: #0d1117;
     --background-color-secondary: #161b22;
     --text-color: #c9d1d9;
     --shadow-color: rgba(255, 255, 255, 0.05);
-}
-
-/* ===== SIDEBAR STYLING ===== */
-[data-testid="stSidebar"] {
+}}
+[data-testid="stSidebar"] {{
     background: linear-gradient(180deg, #161b22, #0d1117);
     color: var(--text-color);
     box-shadow: 2px 0 8px var(--shadow-color);
-}
-
-/* Sidebar title */
-.sidebar-title {
+}}
+.sidebar-title {{
     font-size: 1.4em;
     font-weight: 600;
     color: var(--primary-color);
     text-align: center;
     margin-bottom: 12px;
-}
-
-/* Sidebar radio buttons */
-div[role="radiogroup"] > label {
+}}
+div[role="radiogroup"] > label {{
     background-color: var(--background-color-secondary);
     border: 1px solid rgba(128,128,128,0.2);
     border-radius: 10px;
@@ -144,56 +148,48 @@ div[role="radiogroup"] > label {
     transition: all 0.2s ease;
     color: var(--text-color);
     box-shadow: 0 2px 4px var(--shadow-color);
-}
-div[role="radiogroup"] > label:hover {
+}}
+div[role="radiogroup"] > label:hover {{
     background-color: rgba(100, 149, 237, 0.12);
     transform: translateX(3px);
-}
-div[role="radiogroup"] > label[data-checked="true"] {
+}}
+div[role="radiogroup"] > label[data-checked="true"] {{
     background-color: var(--primary-color);
     color: white !important;
     font-weight: 600;
     border: none;
     box-shadow: 0 0 6px rgba(0, 123, 255, 0.4);
-}
-
-/* Buttons */
-button[kind="primary"] {
+}}
+button[kind="primary"] {{
     background-color: #00adb5 !important;
     color: white !important;
     border-radius: 10px !important;
     transition: 0.3s;
-}
-button[kind="primary"]:hover {
+}}
+button[kind="primary"]:hover {{
     background-color: #05c3de !important;
     transform: scale(1.02);
-}
-
-/* Metric cards */
-div[data-testid="stMetricValue"] {
+}}
+div[data-testid="stMetricValue"] {{
     font-size: 2rem;
     font-weight: 700;
     color: #00ffcc;
-}
-div[data-testid="stMetricLabel"] {
+}}
+div[data-testid="stMetricLabel"] {{
     font-size: 1.1rem;
     font-weight: 600;
-}
-
-/* Animation */
-.fade-in { animation: fadeIn 1.2s ease-in-out; }
-@keyframes fadeIn {
-    0% {opacity: 0; transform: translateY(15px);}
-    100% {opacity: 1; transform: translateY(0);}
-}
-
-/* Footer */
-.footer {
+}}
+.fade-in {{ animation: fadeIn 1.2s ease-in-out; }}
+@keyframes fadeIn {{
+    0% {{opacity: 0; transform: translateY(15px);}}
+    100% {{opacity: 1; transform: translateY(0);}}
+}}
+.footer {{
     text-align: center;
     color: #aaa;
     font-size: 0.9rem;
     margin-top: 2em;
-}
+}}
 </style>
 """, unsafe_allow_html=True)
 
@@ -369,4 +365,5 @@ st.markdown("""
 💡 Developed by <b>Ishan Shrivastava</b> | 📧 ishanshrivastava03@hotmail.com  
 </div>
 """, unsafe_allow_html=True)
+
 
