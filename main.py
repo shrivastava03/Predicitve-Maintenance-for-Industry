@@ -10,7 +10,7 @@ import plotly.express as px
 # PAGE CONFIGURATION
 # ==========================
 st.set_page_config(
-    page_title="Predictive Maintenance",
+    page_title="Predictive Maintenance for Industrial Machines",
     layout="wide",
     page_icon="⚙️"
 )
@@ -200,15 +200,15 @@ div[data-testid="stMetricLabel"] {
 # ==========================
 # LOAD MODEL AND SCALER
 # ==========================
-model = joblib.load('model/model.pkl')
-scaler = joblib.load('model/scaler.pkl')
+model = joblib.load('model.pkl')
+scaler = joblib.load('scaler.pkl')
 
 # ==========================
 # HEADER SECTION
 # ==========================
 col_logo, col_title = st.columns([1, 5])
 with col_logo:
-    st.image("assets/logo.png", width=120)
+    st.image("logo.png", width=120)
 with col_title:
     st.markdown("<h1 class='fade-in'>🛠 Predictive Maintenance for Industrial Equipment</h1>", unsafe_allow_html=True)
 st.markdown("<p class='fade-in'>Predict failures before they happen. Let the machines talk. ⚙️💥</p>", unsafe_allow_html=True)
@@ -369,3 +369,4 @@ st.markdown("""
 💡 Developed by <b>Ishan Shrivastava</b> | 📧 ishanshrivastava03@hotmail.com  
 </div>
 """, unsafe_allow_html=True)
+
