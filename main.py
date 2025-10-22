@@ -308,3 +308,43 @@ st.markdown("""
 💡 Developed by <b>Ishan Shrivastava</b> | 📧 ishanshrivastava03@hotmail.com
 </div>
 """, unsafe_allow_html=True)
+
+# FLOATING MENU BUTTON (Sidebar toggle)
+# -------------------------------
+st.markdown("""
+<style>
+#menu-button {
+    position: fixed;
+    top: 20px;
+    left: 20px;
+    background-color: #238636;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    padding: 10px 14px;
+    font-size: 20px;
+    font-weight: bold;
+    cursor: pointer;
+    z-index: 9999;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+    transition: all 0.2s ease-in-out;
+}
+#menu-button:hover {
+    background-color: #2ea043;
+    transform: scale(1.05);
+}
+</style>
+
+<button id="menu-button">☰</button>
+
+<script>
+const menuBtn = document.getElementById('menu-button');
+menuBtn.addEventListener('click', function() {
+    const sidebar = window.parent.document.querySelector('[data-testid="stSidebar"]');
+    if (sidebar) {
+        const visible = window.getComputedStyle(sidebar).display !== 'none';
+        sidebar.style.display = visible ? 'none' : 'block';
+    }
+});
+</script>
+""", unsafe_allow_html=True)
