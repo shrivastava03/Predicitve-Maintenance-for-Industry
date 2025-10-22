@@ -13,13 +13,12 @@ import time
 st.set_page_config(
     page_title="Predictive Maintenance",
     layout="wide",
-    page_icon="⚙️",
-    initial_sidebar_state="collapsed"  # Start with sidebar collapsed
+    page_icon="⚙️"
 )
 
-# Initialize session state for sidebar toggle
-if 'sidebar_state' not in st.session_state:
-    st.session_state.sidebar_state = 'collapsed'
+# Initialize session state for navigation
+if 'current_section' not in st.session_state:
+    st.session_state.current_section = "🏠 Home"
 
 # -------------------------------
 # CUSTOM DARK THEME + UI STYLING
@@ -134,31 +133,23 @@ div[data-testid="stMetricLabel"] {
     margin-top: 2em;
 }
 
-/* Menu Toggle Button Styling */
-.menu-toggle {
-    position: fixed;
-    top: 20px;
-    left: 20px;
-    z-index: 999;
-    background: linear-gradient(135deg, #238636, #2ea043);
-    color: white;
-    border: none;
-    border-radius: 10px;
-    padding: 12px 16px;
-    font-size: 24px;
-    cursor: pointer;
-    box-shadow: 0 4px 12px rgba(35, 134, 54, 0.4);
-    transition: all 0.3s ease;
+/* Navigation Menu Button */
+.nav-menu-btn {
+    background: linear-gradient(135deg, #238636, #2ea043) !important;
+    color: white !important;
+    border: none !important;
+    border-radius: 10px !important;
+    padding: 10px 18px !important;
+    font-size: 20px !important;
+    font-weight: bold !important;
+    box-shadow: 0 4px 12px rgba(35, 134, 54, 0.4) !important;
+    transition: all 0.3s ease !important;
 }
 
-.menu-toggle:hover {
-    background: linear-gradient(135deg, #2ea043, #3fb950);
-    transform: translateY(-2px);
-    box-shadow: 0 6px 16px rgba(35, 134, 54, 0.6);
-}
-
-.menu-toggle:active {
-    transform: translateY(0);
+.nav-menu-btn:hover {
+    background: linear-gradient(135deg, #2ea043, #3fb950) !important;
+    transform: translateY(-2px) !important;
+    box-shadow: 0 6px 16px rgba(35, 134, 54, 0.6) !important;
 }
 </style>
 """, unsafe_allow_html=True)
@@ -167,44 +158,37 @@ div[data-testid="stMetricLabel"] {
 st.markdown(f"<div id='version' style='display:none;'>{time.time()}</div>", unsafe_allow_html=True)
 
 # -------------------------------
-# MENU TOGGLE BUTTON (Top of page)
-# -------------------------------
-menu_col1, menu_col2 = st.columns([1, 20])
-with menu_col1:
-    if st.button("☰", key="menu_toggle", help="Toggle Navigation Menu"):
-        # Toggle sidebar state
-        if st.session_state.sidebar_state == 'collapsed':
-            st.session_state.sidebar_state = 'expanded'
-        else:
-            st.session_state.sidebar_state = 'collapsed'
-        st.rerun()
-
-# Apply sidebar state
-if st.session_state.sidebar_state == 'expanded':
-    st.markdown("""
-        <style>
-            [data-testid="stSidebar"][aria-expanded="true"] {
-                display: block !important;
-            }
-            [data-testid="stSidebar"] {
-                display: block !important;
-            }
-        </style>
-    """, unsafe_allow_html=True)
-else:
-    st.markdown("""
-        <style>
-            [data-testid="stSidebar"] {
-                display: none !important;
-            }
-        </style>
-    """, unsafe_allow_html=True)
-
-# -------------------------------
 # LOAD MODEL & SCALER
 # -------------------------------
 model = joblib.load('model.pkl')
 scaler = joblib.load('scaler.pkl')
+
+# -------------------------------
+# SIDEBAR NAVIGATION (Always visible)
+# -------------------------------
+st.sidebar.markdown('<div class="sidebar-title">🔧 Navigation</div>', unsafe_allow_html=True)
+
+# Navigation buttons in sidebar
+if st.sidebar.button("🏠 Home", use_container_width=True):
+    st.session_state.current_section = "🏠 Home"
+
+if st.sidebar.button("🔍 Single Prediction", use_container_width=True):
+    st.session_state.current_section = "🔍 Single Prediction"
+
+if st.sidebar.button("📂 Batch Prediction", use_container_width=True):
+    st.session_state.current_section = "📂 Batch Prediction"
+
+if st.sidebar.button("📊 Visual Insights", use_container_width=True):
+    st.session_state.current_section = "📊 Visual Insights"
+
+if st.sidebar.button("ℹ️ About", use_container_width=True):
+    st.session_state.current_section = "ℹ️ About"
+
+st.sidebar.markdown("---")
+st.sidebar.markdown(f"**Current Section:** {st.session_state.current_section}")
+
+# Get current section
+section = st.session_state.current_section
 
 # -------------------------------
 # HEADER SECTION
@@ -218,22 +202,6 @@ with col_title:
 
 st.markdown("<p class='fade-in'>Predict failures before they happen. Let the machines talk. ⚙️💥</p>", unsafe_allow_html=True)
 st.markdown("---")
-
-# -------------------------------
-# SIDEBAR NAVIGATION
-# -------------------------------
-st.sidebar.markdown('<div class="sidebar-title">🔧 Navigation</div>', unsafe_allow_html=True)
-
-# Add close button in sidebar
-if st.sidebar.button("✕ Close Menu", key="close_sidebar"):
-    st.session_state.sidebar_state = 'collapsed'
-    st.rerun()
-
-section = st.sidebar.radio(
-    "Go to:",
-    ["🏠 Home", "🔍 Single Prediction", "📂 Batch Prediction", "📊 Visual Insights", "ℹ️ About"],
-    label_visibility="collapsed"
-)
 
 # -------------------------------
 # HOME SECTION
