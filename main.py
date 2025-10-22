@@ -13,8 +13,13 @@ import time
 st.set_page_config(
     page_title="Predictive Maintenance",
     layout="wide",
-    page_icon="⚙️"
+    page_icon="⚙️",
+    initial_sidebar_state="collapsed"  # Start with sidebar collapsed
 )
+
+# Initialize session state for sidebar toggle
+if 'sidebar_state' not in st.session_state:
+    st.session_state.sidebar_state = 'collapsed'
 
 # -------------------------------
 # CUSTOM DARK THEME + UI STYLING
@@ -128,11 +133,72 @@ div[data-testid="stMetricLabel"] {
     font-size: 0.9rem;
     margin-top: 2em;
 }
+
+/* Menu Toggle Button Styling */
+.menu-toggle {
+    position: fixed;
+    top: 20px;
+    left: 20px;
+    z-index: 999;
+    background: linear-gradient(135deg, #238636, #2ea043);
+    color: white;
+    border: none;
+    border-radius: 10px;
+    padding: 12px 16px;
+    font-size: 24px;
+    cursor: pointer;
+    box-shadow: 0 4px 12px rgba(35, 134, 54, 0.4);
+    transition: all 0.3s ease;
+}
+
+.menu-toggle:hover {
+    background: linear-gradient(135deg, #2ea043, #3fb950);
+    transform: translateY(-2px);
+    box-shadow: 0 6px 16px rgba(35, 134, 54, 0.6);
+}
+
+.menu-toggle:active {
+    transform: translateY(0);
+}
 </style>
 """, unsafe_allow_html=True)
 
 # --- Cache busting (forces CSS reload on redeploy)
-st.markdown(f"<div id='version'>{time.time()}</div>", unsafe_allow_html=True)
+st.markdown(f"<div id='version' style='display:none;'>{time.time()}</div>", unsafe_allow_html=True)
+
+# -------------------------------
+# MENU TOGGLE BUTTON (Top of page)
+# -------------------------------
+menu_col1, menu_col2 = st.columns([1, 20])
+with menu_col1:
+    if st.button("☰", key="menu_toggle", help="Toggle Navigation Menu"):
+        # Toggle sidebar state
+        if st.session_state.sidebar_state == 'collapsed':
+            st.session_state.sidebar_state = 'expanded'
+        else:
+            st.session_state.sidebar_state = 'collapsed'
+        st.rerun()
+
+# Apply sidebar state
+if st.session_state.sidebar_state == 'expanded':
+    st.markdown("""
+        <style>
+            [data-testid="stSidebar"][aria-expanded="true"] {
+                display: block !important;
+            }
+            [data-testid="stSidebar"] {
+                display: block !important;
+            }
+        </style>
+    """, unsafe_allow_html=True)
+else:
+    st.markdown("""
+        <style>
+            [data-testid="stSidebar"] {
+                display: none !important;
+            }
+        </style>
+    """, unsafe_allow_html=True)
 
 # -------------------------------
 # LOAD MODEL & SCALER
@@ -157,6 +223,12 @@ st.markdown("---")
 # SIDEBAR NAVIGATION
 # -------------------------------
 st.sidebar.markdown('<div class="sidebar-title">🔧 Navigation</div>', unsafe_allow_html=True)
+
+# Add close button in sidebar
+if st.sidebar.button("✕ Close Menu", key="close_sidebar"):
+    st.session_state.sidebar_state = 'collapsed'
+    st.rerun()
+
 section = st.sidebar.radio(
     "Go to:",
     ["🏠 Home", "🔍 Single Prediction", "📂 Batch Prediction", "📊 Visual Insights", "ℹ️ About"],
@@ -307,44 +379,4 @@ st.markdown("""
 <div class='footer'>
 💡 Developed by <b>Ishan Shrivastava</b> | 📧 ishanshrivastava03@hotmail.com
 </div>
-""", unsafe_allow_html=True)
-
-# FLOATING MENU BUTTON (Sidebar toggle)
-# -------------------------------
-st.markdown("""
-<style>
-#menu-button {
-    position: fixed;
-    top: 20px;
-    left: 20px;
-    background-color: #238636;
-    color: white;
-    border: none;
-    border-radius: 8px;
-    padding: 10px 14px;
-    font-size: 20px;
-    font-weight: bold;
-    cursor: pointer;
-    z-index: 9999;
-    box-shadow: 0 4px 10px rgba(0,0,0,0.3);
-    transition: all 0.2s ease-in-out;
-}
-#menu-button:hover {
-    background-color: #2ea043;
-    transform: scale(1.05);
-}
-</style>
-
-<button id="menu-button">☰</button>
-
-<script>
-const menuBtn = document.getElementById('menu-button');
-menuBtn.addEventListener('click', function() {
-    const sidebar = window.parent.document.querySelector('[data-testid="stSidebar"]');
-    if (sidebar) {
-        const visible = window.getComputedStyle(sidebar).display !== 'none';
-        sidebar.style.display = visible ? 'none' : 'block';
-    }
-});
-</script>
 """, unsafe_allow_html=True)
