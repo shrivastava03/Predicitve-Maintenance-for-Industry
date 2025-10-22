@@ -96,8 +96,6 @@ st.markdown("""
     }
     </script>
 """, unsafe_allow_html=True)
-
-
 # ==========================
 # GLOBAL CSS STYLING
 # ==========================
@@ -202,15 +200,15 @@ div[data-testid="stMetricLabel"] {
 # ==========================
 # LOAD MODEL AND SCALER
 # ==========================
-model = joblib.load('model.pkl')
-scaler = joblib.load('scaler.pkl')
+model = joblib.load('model/model.pkl')
+scaler = joblib.load('model/scaler.pkl')
 
 # ==========================
 # HEADER SECTION
 # ==========================
 col_logo, col_title = st.columns([1, 5])
 with col_logo:
-    st.image("logo.png", width=120)
+    st.image("assets/logo.png", width=120)
 with col_title:
     st.markdown("<h1 class='fade-in'>🛠 Predictive Maintenance for Industrial Equipment</h1>", unsafe_allow_html=True)
 st.markdown("<p class='fade-in'>Predict failures before they happen. Let the machines talk. ⚙️💥</p>", unsafe_allow_html=True)
@@ -292,7 +290,7 @@ elif section == "📂 Batch Prediction":
 
         except Exception as e:
             st.error(f"❌ Error during prediction: {e}")
-            with open("sample_input.csv", "rb") as f:
+            with open("assets/sample_input.csv", "rb") as f:
                 st.download_button("📄 Download Sample Template", f, "sample_input.csv", "text/csv")
 
 # ==========================
@@ -371,5 +369,3 @@ st.markdown("""
 💡 Developed by <b>Ishan Shrivastava</b> | 📧 ishanshrivastava03@hotmail.com  
 </div>
 """, unsafe_allow_html=True)
-
-
