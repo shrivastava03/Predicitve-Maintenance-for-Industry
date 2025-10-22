@@ -39,6 +39,64 @@ st.markdown("""
         }
     </style>
 """, unsafe_allow_html=True)
+# ==========================
+# FLOATING SIDEBAR TOGGLE BUTTON
+# ==========================
+st.markdown("""
+    <style>
+    .open-sidebar-btn {
+        position: fixed;
+        top: 20px;
+        left: 20px;
+        z-index: 1000;
+        background: linear-gradient(135deg, #00adb5, #007b83);
+        color: white;
+        border: none;
+        border-radius: 50%;
+        width: 46px;
+        height: 46px;
+        cursor: pointer;
+        box-shadow: 0 0 10px rgba(0, 255, 255, 0.4);
+        font-size: 22px;
+        display: none;
+        align-items: center;
+        justify-content: center;
+        transition: all 0.25s ease;
+    }
+    .open-sidebar-btn:hover {
+        transform: scale(1.1);
+        box-shadow: 0 0 18px rgba(0, 255, 255, 0.6);
+    }
+    [data-testid="collapsedControl"] {
+        display: none !important;
+    }
+    </style>
+
+    <script>
+    const observer = new MutationObserver(() => {
+        const sidebar = parent.document.querySelector('[data-testid="stSidebar"]');
+        const btn = parent.document.querySelector('.open-sidebar-btn');
+        if (sidebar && btn) {
+            const isHidden = sidebar.style.visibility === 'hidden' || sidebar.style.display === 'none';
+            btn.style.display = isHidden ? 'flex' : 'none';
+        }
+    });
+
+    observer.observe(parent.document.body, { childList: true, subtree: true });
+
+    if (!parent.document.querySelector('.open-sidebar-btn')) {
+        const btn = document.createElement('button');
+        btn.innerHTML = '☰';
+        btn.classList.add('open-sidebar-btn');
+        btn.onclick = () => {
+            const sidebar = parent.document.querySelector('[data-testid="stSidebar"]');
+            if (sidebar) sidebar.style.visibility = 'visible';
+        };
+        parent.document.body.appendChild(btn);
+    }
+    </script>
+""", unsafe_allow_html=True)
+
 
 # ==========================
 # GLOBAL CSS STYLING
@@ -313,4 +371,5 @@ st.markdown("""
 💡 Developed by <b>Ishan Shrivastava</b> | 📧 ishanshrivastava03@hotmail.com  
 </div>
 """, unsafe_allow_html=True)
+
 
